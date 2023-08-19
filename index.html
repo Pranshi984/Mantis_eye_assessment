@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .org-chart {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .node {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+
+    .node .name {
+      font-weight: bold;
+    }
+
+    .node .designation {
+      color: #555;
+    }
+  </style>
+  <title>Organizational Chart</title>
+</head>
+<body>
+  <div class="org-chart">
+    <div class="node" id="alice">
+      <div class="name">Alice Anderson</div>
+      <div class="designation">Founder</div>
+    </div>
+    <!-- Add more nodes here -->
+  </div>
+  <script>
+    const employees = [
+      { fullName: "Alice Anderson", designation: "Founder", manager: null },
+      // Add more employees here
+    ];
+
+    function createNodes(employees, manager = null) {
+      const nodes = [];
+      for (const employee of employees) {
+        if (employee.manager === manager) {
+          const node = document.createElement("div");
+          node.className = "node";
+          node.id = employee.fullName.toLowerCase().replace(" ", "-");
+          node.innerHTML = `
+            <div class="name">${employee.fullName}</div>
+            <div class="designation">${employee.designation}</div>
+          `;
+          nodes.push(node);
+          const childNodes = createNodes(employees, employee.fullName);
+          if (childNodes.length > 0) {
+            const childContainer = document.createElement("div");
+            childContainer.className = "child-container";
+            childNodes.forEach(childNode => childContainer.appendChild(childNode));
+            node.appendChild(childContainer);
+          }
+        }
+      }
+      return nodes;
+    }
+
+    function addToChart(nodes) {
+      const orgChart = document.querySelector(".org-chart");
+      nodes.forEach(node => orgChart.appendChild(node));
+    }
+
+    const nodes = createNodes(employees);
+    addToChart(nodes);
+  </script>
+</body>
+</html>
